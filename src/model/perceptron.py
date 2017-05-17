@@ -63,13 +63,23 @@ class Perceptron(Classifier):
         pass
         for epoch in range(self.epochs):
             for i in range(self.trainingSet.input.shape[0]):
-                preresult = dot(self.weight, self.trainingSet.input[i,:])
-                result = Activation.sign(preresult, threshold=0)
+                pre_result = dot(self.weight, self.trainingSet.input[i,:])
+                result = Activation.sign(pre_result, threshold=0)
                 error = self.trainingSet.label[i] - result
                 self.updateWeights(self.trainingSet.input[i,:], error)
-            correct = 0
-           # for j in range(self.validationSet.input.shape[0]):
-
+            correct = 0.0
+            for j in range(self.validationSet.input.shape[0]):
+                valid_result = Activation.sign(dot(self.weight, self.validationSet.input[j,:]))
+                if valid_result == self.validationSet.label[j]:
+                    correct += 1.0
+            accuracy = correct/self.validationSet.input.shape[0]
+           # print('after %d times training, valiation accuracy : %.4f %d' %(epoch, accuracy, correct))
+           # Den Schwellwert hab ich selbst auf 0.98 gesetzt
+            if accuracy >= 0.98:
+                if verbose:
+                    print('After %d times training, Validation accuracy:%.4f>0.98' %(epoch, accuracy))
+                    print('Stop training to avoid overflitting!')
+                break
 
     def classify(self, testInstance):
         """Classify a single instance.
