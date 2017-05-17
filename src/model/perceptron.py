@@ -78,8 +78,10 @@ class Perceptron(Classifier):
             if accuracy >= 0.98:
                 if verbose:
                     print('After %d times training, Validation accuracy:%.4f>0.98' %(epoch, accuracy))
-                    print('Stop training to avoid overflitting!')
+                    print('Stop training to avoid overfitting!')
                 break
+        if epoch == self.epochs - 1:
+            print('No accuracy >= threshold, no need to break loop to avoid overfitting')
 
     def classify(self, testInstance):
         """Classify a single instance.
